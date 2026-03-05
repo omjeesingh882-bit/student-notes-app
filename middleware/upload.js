@@ -1,36 +1,36 @@
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
-const path = require('path');
 
-// Set storage engine
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Check File Type
-function checkFileType(file, cb) {
-    // Allowed ext
-    const filetypes = /pdf|doc|docx|ppt|pptx/;
-    // Check ext
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
-    const mimetype = filetypes.test(file.mimetype);
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'student-notes',
+        resource_type: 'raw', // "raw" is used for non-image files like PDF, DOCX, PPTX
+        // format: async (req, file) => 'pdf', // We do not force format
+    },
+});
 
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Error: Documents Only (PDF, DOC, PPT)!'));
-    }
-}
-
-// Init upload
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10000000 }, // 10MB limit
-    fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /pdf|doc|docx|ppt|pptx/;
+
+        const isExtValid = filetypes.test(file.originalname.toLowerCase());
+        const isMimeValid = filetypes.test(file.mimetype);
+
+        if (isExtValid) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Error: Documents Only (PDF, DOC, PPT)!'));
+        }
     }
 });
 

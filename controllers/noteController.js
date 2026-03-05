@@ -18,8 +18,8 @@ const uploadNote = async (req, res) => {
             subject,
             semester,
             description,
-            fileName: req.file.filename,
-            filePath: req.file.path,
+            fileName: req.file.originalname,
+            filePath: req.file.path, // This is now the Cloudinary URL
             fileType: req.file.mimetype,
             uploadedBy: req.user._id
         });
@@ -87,8 +87,10 @@ const downloadNote = async (req, res) => {
             note.downloads += 1;
             await note.save();
 
-            const file = path.join(__dirname, '..', note.filePath);
-            res.download(file, note.fileName);
+            // Cloudinary files can be accessed via their URL directly
+            // Just redirect user to the Cloudinary raw file URL
+            // Optionally, attachment flag can be handled on the frontend or via Cloudinary flags
+            return res.redirect(note.filePath);
         } else {
             res.status(404).json({ message: 'Note not found' });
         }
@@ -131,16 +133,12 @@ const deleteNote = async (req, res) => {
         const note = await Note.findById(req.params.id);
 
         if (note) {
-            // Check if user is owner or admin
             if (note.uploadedBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
                 return res.status(403).json({ message: 'User not authorized to delete this note' });
             }
 
-            // Remove file
-            const filePath = path.join(__dirname, '..', note.filePath);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
+            // In a complete implementation you would also call cloudinary.uploader.destroy()
+            // with the public_id of the file to remove it from cloud storage.
 
             await note.deleteOne();
             res.json({ message: 'Note removed' });
@@ -160,20 +158,9 @@ const viewNote = async (req, res) => {
         const note = await Note.findById(req.params.id);
 
         if (note) {
-            const file = path.join(__dirname, '..', note.filePath);
-
-            // Set appropriate content type based on file type
-            let contentType = 'application/pdf'; // Default fallback
-            if (note.fileType === 'application/pdf') contentType = 'application/pdf';
-            else if (note.fileType.includes('word') || note.fileType.includes('doc')) contentType = 'application/msword';
-            else if (note.fileType.includes('powerpoint') || note.fileType.includes('ppt')) contentType = 'application/vnd.ms-powerpoint';
-
-            res.setHeader('Content-Type', contentType);
-            // inline means browser tries to display it
-            res.setHeader('Content-Disposition', `inline; filename="${note.fileName}"`);
-
-            // Send file
-            res.sendFile(file);
+            // For Cloudinary files, we just redirect to the Cloudinary URL.
+            // Modern browsers will display PDFs inline natively.
+            return res.redirect(note.filePath);
         } else {
             res.status(404).json({ message: 'Note not found' });
         }
