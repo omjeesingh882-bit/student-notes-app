@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Notes Sharing</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" id="nav-logo">
+                <i class="fa-solid fa-graduation-cap"></i> NoteShare
+            </a>
+
+            <div class="nav-search">
+                <input type="text" id="header-search-input" placeholder="Search notes...">
+                <button id="header-search-btn"><i class="fa-solid fa-search"></i></button>
+            </div>
+
+            <div class="nav-links">
+                <button id="theme-toggle" class="icon-btn" title="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div id="unauth-links" class="nav-group">
+                    <button class="btn btn-outline" id="btn-login-modal">Login</button>
+                    <button class="btn btn-primary" id="btn-register-modal">Register</button>
+                </div>
+                <div id="auth-links" class="nav-group hidden">
+                    <button class="btn btn-primary" id="btn-upload-modal"><i class="fa-solid fa-plus"></i> Upload
+                        Note</button>
+                    <a href="#" id="nav-dashboard" class="nav-link">Dashboard</a>
+                    <a href="#" id="nav-admin" class="nav-link hidden">AdminPanel</a>
+                    <div class="user-menu">
+                        <span id="nav-username" class="username">User</span>
+                        <button class="btn btn-outline" id="btn-logout">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="main-content">
+        <!-- Views will be dynamically injected or toggled here -->
+    </main>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2>Welcome Back</h2>
+                <p>Login to your account to upload and download notes.</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2>Create an Account</h2>
+                <p>Join the community and share your knowledge.</p>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-username">Username</label>
+                    <input type="text" id="reg-username" required placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" required placeholder="Create a password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Note Modal -->
+    <div id="upload-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2>Upload Note</h2>
+                <p>Share your study materials with the community.</p>
+            </div>
+            <form id="upload-form">
+                <div class="form-group">
+                    <label for="up-title">Title</label>
+                    <input type="text" id="up-title" required placeholder="e.g. Data Structures Full Notes">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="up-subject">Subject</label>
+                        <input type="text" id="up-subject" required placeholder="e.g. Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label for="up-semester">Semester</label>
+                        <select id="up-semester" required>
+                            <option value="">Select Semester</option>
+                            <option value="1">1st Semester</option>
+                            <option value="2">2nd Semester</option>
+                            <option value="3">3rd Semester</option>
+                            <option value="4">4th Semester</option>
+                            <option value="5">5th Semester</option>
+                            <option value="6">6th Semester</option>
+                            <option value="7">7th Semester</option>
+                            <option value="8">8th Semester</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="up-desc">Description</label>
+                    <textarea id="up-desc" required placeholder="Brief description of the notes" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="up-file">File (PDF, DOC, PPT)</label>
+                    <input type="file" id="up-file" required accept=".pdf,.doc,.docx,.ppt,.pptx">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-block">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Note Details Modal -->
+    <div id="note-details-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 id="detail-title">Note Title</h2>
+                <p id="detail-meta">Uploaded by User on Date</p>
+            </div>
+            <div class="note-info">
+                <p><strong>Subject:</strong> <span id="detail-subject"></span> | <strong>Semester:</strong> <span
+                        id="detail-semester"></span></p>
+                <div class="mt-2 mb-2">
+                    <p id="detail-desc"></p>
+                </div>
+                <div class="action-buttons mt-2 mb-2" style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" id="btn-download"><i class="fa-solid fa-download"></i> Download
+                        (<span id="detail-downloads"></span>)</button>
+                    <button class="btn btn-outline" id="btn-like"><i class="fa-solid fa-heart"></i> Like (<span
+                            id="detail-likes"></span>)</button>
+                    <button class="btn btn-error hidden" id="btn-delete-note"><i class="fa-solid fa-trash"></i>
+                        Delete</button>
+                </div>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div id="comments-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+                <form id="comment-form" class="hidden">
+                    <div class="form-group">
+                        <input type="text" id="comment-input" placeholder="Write a comment..." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+                <p id="comment-login-msg" class="text-muted" style="font-size: 0.9rem;">Login to post comments.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+
+</html>
