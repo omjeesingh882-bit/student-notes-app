@@ -158,9 +158,10 @@ const viewNote = async (req, res) => {
         const note = await Note.findById(req.params.id);
 
         if (note) {
-            // For Cloudinary files, we just redirect to the Cloudinary URL.
-            // Modern browsers will display PDFs inline natively.
-            return res.redirect(note.filePath);
+            // Cloudinary often forces Content-Disposition: attachment for raw files on free tiers.
+            // Best way to guarantee inline viewing of PDFs/DOCs is to use Google Docs Viewer wrapper.
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(note.filePath)}&embedded=true`;
+            return res.redirect(viewerUrl);
         } else {
             res.status(404).json({ message: 'Note not found' });
         }
