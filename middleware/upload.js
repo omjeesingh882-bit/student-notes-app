@@ -12,8 +12,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'student-notes',
-        resource_type: 'raw', // "raw" is used for non-image files like PDF, DOCX, PPTX
-        // format: async (req, file) => 'pdf', // We do not force format
+        resource_type: 'auto', // "auto" allows PDFs to be viewed inline and DOCs to be downloaded
     },
 });
 
